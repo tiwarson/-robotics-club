@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotics Club</title>
+    <style>
+        /* Basic CSS reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Simple navigation */
+        .navbar {
+            background-color: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background-color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #4CAF50;
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Hero section */
+        .hero {
+            background-image: url('https://media.istockphoto.com/id/1095837422/vector/robotics-word-the-inscription-and-letters-are-stylized-in-the-form-of-details-of-robots-and.jpg?s=612x612&w=0&k=20&c=UMFS4Sbr81D9tm6sBF3_F_WOwT1TJb3yfp7saY1L0Wo=');
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            color: white;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            animation: buttonAnimation 3s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+            transform: translateY(-5px);
+        }
+
+        /* Section styling */
+        .section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        /* Features section */
+        .features-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .feature-box {
+            width: 250px;
+            border: 1px solid #ddd;
+            text-align: center;
+            padding-bottom: 15px;
+            transition: transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .feature-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-box:hover .feature-img {
+            transform: scale(1.1);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -20px auto 15px;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* About section */
+        .about {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .about-reverse {
+            flex-direction: row-reverse;
+        }
+
+        .about-content, .about-image {
+            flex: 1;
+            opacity: 0;
+        }
+
+        .about-content {
+            transform: translateX(-50px);
+        }
+
+        .about-content.visible {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .about-reverse .about-content {
+            transform: translateX(50px);
+        }
+
+        .about-reverse .about-content.visible {
+            transform: translateX(0);
+        }
+
+        .about-image {
+            transform: translateX(50px);
+        }
+
+        .about-image.visible {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .about-reverse .about-image {
+            transform: translateX(-50px);
+        }
+
+        .about-reverse .about-image.visible {
+            transform: translateX(0);
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        /* Stats section */
+        .stats {
+            background-image: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            position: relative;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .stats-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-box {
+            margin: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .stat-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .stat-circle {
+            width: 80px;
+            height: 80px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            flex: 1 0 300px;
+            height: 250px;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Contact section */
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .contact-info, .contact-form {
+            flex: 1;
+            min-width: 300px;
+            opacity: 0;
+        }
+
+        .contact-info {
+            transform: translateX(-50px);
+        }
+
+        .contact-info.visible {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .contact-form {
+            transform: translateX(50px);
+        }
+
+        .contact-form.visible {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .contact-info img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, 
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .form-group textarea {
+            height: 100px;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background-color: #45a049;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: #4CAF50;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes buttonAnimation {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: #333;
+                padding: 20px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 10px 0;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .about {
+                flex-direction: column;
+            }
+
+            .about-reverse {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .section-title h2 {
+                font-size: 28px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="logo">Robotics Club</a>
+            <button class="menu-btn">☰</button>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero" id="home">
+        <div class="hero-content">
+            <h1>Robotics Club</h1>
+            <p>INNOVATE, BUILD, COMPETE</p>
+            <button class="btn" id="join-btn">JOIN US</button>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="section" id="features">
+        <div class="section-title">
+            <h2>ROBOTICS PILLARS</h2>
+            <p>Our Focus Areas</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-box">
+                <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?auto=format&fit=crop&w=1000&q=80" alt="Programming" class="feature-img">
+                <div class="feature-icon">P</div>
+                <p>Programming & AI</p>
+            </div>
+            <div class="feature-box">
+                <img src="https://hde.co.il/wp-content/uploads/2022/06/futuristic-industry-40-inventive-mechanized-engineering-concept-1.jpg" alt="Mechanical Design" class="feature-img">
+                <div class="feature-icon">M</div>
+                <p>Mechanical Design</p>
+            </div>
+            <div class="feature-box">
+                <img src="https://images.unsplash.com/photo-1580894908361-967195033215?auto=format&fit=crop&w=1000&q=80" alt="Electronics" class="feature-img">
+                <div class="feature-icon">E</div>
+                <p>Electronics & Circuits</p>
+            </div>
+            <div class="feature-box">
+                <img src="https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=1000&q=80" alt="Innovation" class="feature-img">
+                <div class="feature-icon">I</div>
+                <p>Innovation & Research</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="section" id="about">
+        <div class="about">
+            <div class="about-content">
+                <h2>LEARN AND INNOVATE</h2>
+                <p>
+                    Our robotics club provides a collaborative environment where students can explore the exciting world of robotics. 
+                    From building autonomous vehicles to programming intelligent systems, we offer hands-on experience with cutting-edge technology.
+                </p>
+                <br>
+                <button class="btn">LEARN MORE</button>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80" alt="Students working on robots">
+            </div>
+        </div>
+        
+        <div class="about about-reverse">
+            <div class="about-content">
+                <h2>COMPETE AND EXCEL</h2>
+                <p>
+                    Our club regularly participates in prestigious robotics competitions including FIRST Robotics, VEX Robotics, and RoboCup. 
+                    These competitions challenge our members to apply their skills in high-pressure environments, fostering teamwork and innovation.
+                </p>
+                <br>
+                <button class="btn">OUR ACHIEVEMENTS</button>
+            </div>
+            <div class="about-image">
+                <img src="https://img.freepik.com/free-vector/robot-competition-illustration_1284-59228.jpg?t=st=1743760889~exp=1743764489~hmac=be37851b11c57796d8abbe662cca3c414df4e32140887ba56a4d8eedd42995d6&w=1800" alt="Robot competition">
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats">
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-circle">2010</div>
+                <p>SINCE 2010</p>
+            </div>
+            <div class="stat-box">
+                <div class="stat-circle">50+</div>
+                <p>MEMBERS</p>
+            </div>
+            <div class="stat-box">
+                <div class="stat-circle">15+</div>
+                <p>AWARDS</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impact Section -->
+    <div class="section" id="impact">
+        <div class="section-title">
+            <h2>OUR IMPACT</h2>
+            <p>On Technology & Society</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon">E</div>
+                <h3>STEM EDUCATION</h3>
+                <p>Promoting science and technology education in our community.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">I</div>
+                <h3>INNOVATION</h3>
+                <p>Creating solutions for real-world problems through robotics.</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">S</div>
+                <h3>SUSTAINABILITY</h3>
+                <p>Developing eco-friendly technologies and practices.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="section" id="gallery">
+        <div class="section-title">
+            <h2>OUR GALLERY</h2>
+        </div>
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="https://img.freepik.com/free-vector/robot-competition-illustration_1284-59228.jpg?t=st=1743760889~exp=1743764489~hmac=be37851b11c57796d8abbe662cca3c414df4e32140887ba56a4d8eedd42995d6&w=1800" alt="Robot competition">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80" alt="Team working">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=800&q=80" alt="Robot prototype">
+            </div>
+            <div class="gallery-item">
+                <img src="https://img.freepik.com/premium-photo/3d-rendering-humanoid-robot-holding-golden-trophy_493806-2443.jpg?w=1380" alt="Award ceremony">
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="section" id="contact">
+        <div class="section-title">
+            <h2>CONTACT US</h2>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <img src="https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=800&q=80" alt="Robot">
+                <p>
+                    Have questions about joining our robotics club or interested in sponsoring our team? 
+                    Use our contact form or reach out directly using the contact information below.
+                </p>
+                <br>
+                <p>
+                    <strong>Email:</strong> robotics@example.com<br>
+                    <strong>Phone:</strong> (123) 456-7890<br>
+                    <strong>Location:</strong> Engineering Building, Room 301
+                </p>
+            </div>
+            <div class="contact-form">
+                <h3>JOIN OUR NEWSLETTER</h3>
+                <div class="form-group">
+                    <input type="email" placeholder="Enter your email">
+                </div>
+                <button class="btn">SUBMIT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">↑</div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-icon">FB</a>
+            <a href="#" class="social-icon">IG</a>
+            <a href="#" class="social-icon">TW</a>
+            <a href="#" class="social-icon">LI</a>
+        </div>
+        <p>© 2025 University Robotics Club. All rights reserved.</p>
+    </div>
+
+    <!-- Join Modal -->
+    <div class="modal" id="join-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Join Our Robotics Club</h2>
+            <form id="join-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="interest">Area of Interest</label>
+                    <select id="interest" name="interest">
+                        <option value="">Select an option</option>
+                        <option value="programming">Programming & AI</option>
+                        <option value="mechanical">Mechanical Design</option>
+                        <option value="electronics">Electronics & Circuits</option>
+                        <option value="innovation">Innovation & Research</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Why do you want to join?</label>
+                    <textarea id="message" name="message"></textarea>
+                </div>
+                <button type="submit" class="btn">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuBtn = document.querySelector('.menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Back to top button
+            const backToTopBtn = document.querySelector('.back-to-top');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Modal functionality
+            const modal = document.getElementById('join-modal');
+            const joinBtn = document.getElementById('join-btn');
+            const closeModal = document.querySelector('.close-modal');
+            const joinForm = document.getElementById('join-form');
+
+            joinBtn.addEventListener('click', function() {
+                modal.style.display = 'flex';
+            });
+
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            joinForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your interest! Your application has been submitted.');
+                modal.style.display = 'none';
+                joinForm.reset();
+            });
+
+            // Scroll animations
+            function checkScroll() {
+                const elements = document.querySelectorAll('.feature-box, .stat-box, .gallery-item, .about-content, .about-image, .contact-info, .contact-form');
+                
+                elements.forEach(element => {
+                    const position = element.getBoundingClientRect();
+                    // If element is in viewport
+                    if (position.top < window.innerHeight * 0.9 && position.bottom >= 0) {
+                        element.classList.add('visible');
+                    }
+                });
+            }
+
+            // Check elements on load
+            checkScroll();
+
+            // Check elements on scroll
+            window.addEventListener('scroll', checkScroll);
+
+            // Simple smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 60,
+                            behavior: 'smooth'
+                        });
+                    }
+                    
+                    // Close mobile menu if open
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
